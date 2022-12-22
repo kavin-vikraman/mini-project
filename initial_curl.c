@@ -10,6 +10,6 @@ int main(void)
     res = curl_easy_perform(curl);
   }
   
-  
+  printf("\n");
   return 0;
 }
