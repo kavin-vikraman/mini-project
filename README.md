@@ -5,7 +5,7 @@ This Repo is for Mini-Project on "Web Crawler".
 
 The Repo consist of:
 
-***1. "initial_curl.c" :*** This code `#0969DA`consists of simple cURL commands to get the HTML page using CURLcode variable.
+***1. "initial_curl.c" :*** This code consists of simple cURL commands to get the HTML page using CURLcode variable.
 
 ***2. "download_HTML.c" :*** This code is used to download the HTML page in the local file using file Handling in C.
 
