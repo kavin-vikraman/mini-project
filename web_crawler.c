@@ -119,7 +119,7 @@ char** validate_links(char** links,int *lin,int *final_ind){
   return final_list;
 }
 void dfs_crawler(const char** crawled, int *crawl_ind, const char* URL,const char* file_name,int depth){
-  if(depth==4 && !check(URL, crawled, crawl_ind)) return; 
+  if(depth==4 || check(URL, crawled, crawl_ind)) return; 
 
   char** links;
   crawled[(*crawl_ind)++] = URL;
