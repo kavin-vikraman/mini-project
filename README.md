@@ -13,4 +13,6 @@ The Repo consist of:
 
 ***4. "extract_https.c" :*** This code is used to extract https links from collected Hyperlinks.
 
-***5. "web_crawler.c" :*** This is the web crawler bot with depth of 3 with given URL. I have given https://www.github.com/ as testing URL. Feel free to check with other links also.
+***5. "web_crawler.c" :*** This is the web crawler bot with depth of 3 with given URL. I have given https://www.github.com/ as testing URL.
+
+***6. "web_crawler_2.c" :*** This is the web crawler bot with depth upto 20 with given URLs(More than one). 
