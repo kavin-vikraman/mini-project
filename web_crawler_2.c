@@ -104,9 +104,9 @@ char** validate_links(char** links,int *lin,int *final_ind){
   for(int i=0; i<1000; i++) {
     final_list[i] = (char*)malloc(sizeof(char)*1000);
   }
-  regex_t pattern;
-  int value = regcomp( &pattern, "^https://[a-z].*com" , 0);
-  
+  regex_t pattern,p;
+  int value1 = regcomp( &pattern, "https://[a-z].*com" , 0);
+  int value2 = regcomp( &p, "http://[a-z].*com" , 0);
   for(int i=0;i<(*lin);i++)
   {
     char* one_link = links[i];
@@ -120,12 +120,11 @@ char** validate_links(char** links,int *lin,int *final_ind){
     }
     cleaned_list[clean_ind] = '\0';
     
-    value = regexec( &pattern ,cleaned_list, 0, NULL, 0);
-    if (!value) {
+    value1 = regexec( &pattern ,cleaned_list, 0, NULL, 0);
+    value2 = regexec( &p ,cleaned_list, 0, NULL, 0);
+    if (!value1||!value2) {
       final_list[(*final_ind)++] = cleaned_list;
-      // printf("%s\n",cleaned_list);
     }
-    // printf("%d\n",*final_ind);
   } 
   return final_list;
 }
