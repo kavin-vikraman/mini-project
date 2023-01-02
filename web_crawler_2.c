@@ -7,10 +7,10 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/types.h>
-// pthread_mutex_t mutx;
+#define MAX 2000
 
 //Give Your Requirements in below two lines
-char* URL_list[] = {"https://www.google.com/","https://github.com/","https://codeforces.com/"};
+char* URL_list[] = {"https://www.google.com/","https://github.com/","https://codeforces.com/","https://www.codechef.com/"};
 int depth_final = 4;
 //Rst of the Programs
 
@@ -20,7 +20,7 @@ int temp=0;
 int * crawl_ind = &temp;
 const int usize = sizeof(URL_list)/sizeof(URL_list[0]);
 const char* file_name = "HTML.txt";
-int depth[20] ={0};
+int depth[MAX] ={0};
 
 int check( char* URL){
   int flag =0;
@@ -78,11 +78,10 @@ char** extract_hlinks( int *lin){
   char *html = str;
   char * begin = html;
   char * end;
-  char** links = malloc(sizeof(char*)*1000);
-  for(int i=0; i<1000; i++) {
-    links[i] = (char*)malloc(sizeof(char)*1000);
+  char** links = malloc(sizeof(char*)*MAX);
+  for(int i=0; i<MAX; i++) {
+    links[i] = (char*)malloc(sizeof(char)*MAX);
   }
-  // char* links[100];
   int size = sizeof(char*);
   while ((begin = strcasestr(begin, "<a href=\"")) != NULL) {
     begin += 9;
@@ -100,9 +99,9 @@ char** extract_hlinks( int *lin){
   return links;
 }
 char** validate_links(char** links,int *lin,int *final_ind){
-  char** final_list = malloc(sizeof(char*)*1000);
-  for(int i=0; i<1000; i++) {
-    final_list[i] = (char*)malloc(sizeof(char)*1000);
+  char** final_list = malloc(sizeof(char*)*MAX);
+  for(int i=0; i<MAX; i++) {
+    final_list[i] = (char*)malloc(sizeof(char)*MAX);
   }
   regex_t pattern,p;
   int value1 = regcomp( &pattern, "https://[a-z].*com" , 0);
@@ -110,12 +109,11 @@ char** validate_links(char** links,int *lin,int *final_ind){
   for(int i=0;i<(*lin);i++)
   {
     char* one_link = links[i];
-    char* cleaned_list = malloc(sizeof(char*)*100);
+    char* cleaned_list = malloc(sizeof(char*)*MAX);
     int clean_ind=0;
     for(int j=0;j<strlen(one_link);j++)
     {
       if(one_link[j] == ' ' || one_link[j] == '"' || one_link[j] == '\'') continue; 
-      // printf("%c",one_link[j]);
       cleaned_list[clean_ind++] = one_link[j]; 
     }
     cleaned_list[clean_ind] = '\0';
@@ -129,26 +127,27 @@ char** validate_links(char** links,int *lin,int *final_ind){
   return final_list;
 }
 void *dfs_crawler( int pargs){
-  long ind= (long )pargs; 
+  int ind= pargs; 
   if(depth[ind]==(depth_final+1) || check(URL_list[ind])) return NULL; 
   
-  pthread_t thread[100];
+  pthread_t thread[MAX];
   char** links;
   crawled[(*crawl_ind)++] = URL_list[ind];
-  // pthread_mutex_lock(&mutx);  
-  printf("%d. \t  Depth: %d\t Thread: %ld\t Link: %s\n",count++,depth[ind],ind+1,URL_list[ind]);
+  FILE* file= fopen("temp.txt","a");
+  printf("%d. \t  Depth: %d\t Thread: %d\t Link: %s\n",count,depth[ind],ind+1,URL_list[ind]);
+  fprintf(file,"%d. \n\t Depth: %d\n \t Thread: %d \n \t Link: %s \n",count++, depth[ind],ind+1,URL_list[ind]);
+  fprintf(file,"-----------------------------------------------------------------------------------\n");
+  fclose(file);
   get_page(URL_list[ind]);
   int lind=0;
   links = extract_hlinks(&lind);
   char ** final_list;
   int find=0;
-  // printf("%d\n",lind);
   if(lind>0)
   final_list = validate_links(links,&lind,&find);
   else
   return NULL;
 
-  // pthread_mutex_destroy(&mutx); 
   for(int i=0;i<find;i++){
     // sleep(0.01);
     URL_list[ind] = final_list[i];
@@ -163,10 +162,11 @@ void *dfs_crawler( int pargs){
 int main(void)
 {
   int depth=0; 
-  pthread_t thread[usize];
-  crawled = (const char**)malloc(sizeof(char*)*1000);
-  for(int i=0; i<1000; i++) {
-    crawled[i] = (const char*)malloc(sizeof(char*)*1000);
+  FILE* file = fopen("temp.txt","w");
+  file = fopen("temp.txt","a");
+  crawled = (const char**)malloc(sizeof(char*)*MAX);
+  for(int i=0; i<MAX; i++) {
+    crawled[i] = (const char*)malloc(sizeof(char*)*MAX);
   }
   for(int i=0;i<usize;i++){
     dfs_crawler(i);
